@@ -15,13 +15,14 @@ import json
 
 class CuentaBancaria:
     def __init__(self, dni, nombre, apellido, cuenta, saldo):
-        self.__dni = self.validar_dni(dni)
+        self.__dni = self.validar_dni(dni) 
         self.__nombre = nombre
         self.__apellido = apellido
         self.__cuenta = cuenta
         self.__saldo = self.validar_saldo(saldo)
+        #Con doble __ se aplica encapsulamiento para proteger la información, por lo tanto hay q proveer los métodos para acceder a esa información y usarlos. Dado a que al estar oculto no se puede acceder a ellos desde otra clase.
 
-    @property
+    @property #Con esta función se convierte este atributo en una propiedad de la clase
     def dni(self):
         return self.__dni
     
@@ -39,7 +40,7 @@ class CuentaBancaria:
     
     @property
     def saldo(self):
-        return self.__salado
+        return self.__saldo
     
     @saldo.setter
     def saldo(self, nuevo_saldo):
@@ -59,13 +60,13 @@ class CuentaBancaria:
     def validar_saldo(self, saldo):
         try:
             saldo_num = float(saldo)
-            if saldo_num <= 0:
+            if saldo_num < 0:
                 raise ValueError("El saldo debe ser numérico positivo.")
             return saldo_num
         except ValueError:
             raise ValueError("El saldo debe ser un número válido.")
 
-    def to_dict(self):
+    def to_dict(self): #Metodo para devolver un diccionario
         return {
             "dni": self.dni,
             "nombre": self.nombre,
@@ -74,13 +75,14 @@ class CuentaBancaria:
             "saldo": self.saldo
         }
 
-    def __str__(self):
+    def __str__(self): #Metodo para devolver una cadena de texto
         return f"{self.nombre} {self.apellido}"
 
 class CuentaBancariaCorriente(CuentaBancaria):
     def __init__(self, dni, nombre, apellido, cuenta, saldo, corriente):
         super().__init__(dni, nombre, apellido, cuenta, saldo)
         self.__corriente = corriente
+        #super hace los atributos de la super clase pasen a esta Subclase
 
     @property
     def corriente(self):
@@ -135,28 +137,28 @@ class GestionCuentaBancaria:
         except Exception as error:
             print(f'Error inesperado: {error}')
 
-    def crear_CuentaBancaria(self, CuentaBancaria):
+    def crear_cuentabancaria(self, cuentabancaria):
         try:
             datos = self.leer_datos()
-            dni = CuentaBancaria.dni
+            dni = cuentabancaria.dni
             if not str(dni) in datos.keys():
-                datos[dni] = CuentaBancaria.to_dict()
+                datos[dni] = cuentabancaria.to_dict()
                 self.guardar_datos(datos)
-                print(f"La Cuenta Bancaria de {CuentaBancaria.nombre} {CuentaBancaria.apellido} se ha creado correctamente.")
+                print(f"La Cuenta Bancaria de {cuentabancaria.nombre} {cuentabancaria.apellido} se ha creado correctamente.")
             else:
                 print(f"Ya existe cuenta bancacia con DNI '{dni}'.")
         except Exception as error:
             print(f'Error inesperado al crear la cuenta bancaria: {error}')
 
-    def leer_CuentaBancaria(self, dni):
+    def leer_cuentabancaria(self, dni):
         try:
             datos = self.leer_datos()
             if dni in datos:
-                CuentaBancaria_data = datos[dni]
-                if 'corriente' in CuentaBancaria_data:
-                    CuentaBancaria = CuentaBancariaCorriente(**CuentaBancaria_data)
+                cuentabancaria_data = datos[dni]
+                if 'Cuenta Corriente' in cuentabancaria_data:
+                    cuentabancaria = CuentaBancariaCorriente(**cuentabancaria_data) #** desempaquetador
                 else:
-                    CuentaBancaria = CuentaBancariaAhorro(**CuentaBancaria_data)
+                    cuentabancaria = CuentaBancariaAhorro(**cuentabancaria_data)
                 print(f'Cuenta bancaria encontrada con DNI {dni}')
             else:
                 print(f'No se encontró ha encontrado Cuenta Bancaria con DNI {dni}')
@@ -164,7 +166,7 @@ class GestionCuentaBancaria:
         except Exception as e:
             print('Error al leer Cuenta Bancaria: {e}')
 
-    def actualizar_CuentaBancaria(self, dni, nuevo_saldo):
+    def actualizar_cuentabancaria(self, dni, nuevo_saldo):
         try:
             datos = self.leer_datos()
             if str(dni) in datos.keys():

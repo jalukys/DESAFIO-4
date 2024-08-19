@@ -1,7 +1,7 @@
 import os
 import platform
 
-from cuenta_bancaria_poo.py import (
+from cuenta_bancaria_poo import (
     CuentaBancariaCorriente,
     CuentaBancariaAhorro,
     GestionCuentaBancaria,
@@ -25,7 +25,7 @@ def mostrar_menu():
     print('7. Salir')
     print('======================================================')
 
-def agregar_CuentaBancaria(gestion, tipo_CuentaBancaria):
+def agregar_cuentabancaria(gestion, tipo_cuentabancaria):
     try:
         dni = input('Ingrese DNI del titular de la Cuenta Bancaria: ')
         nombre = input('Ingrese nombre del titular: ')
@@ -33,17 +33,17 @@ def agregar_CuentaBancaria(gestion, tipo_CuentaBancaria):
         cuenta = int(input('Ingrese número de la Cuenta Bancaria: '))
         saldo = float(input('Ingrese saldo de la Cuenta Bancaria: '))
 
-        if tipo_CuentaBancaria == '1':
-            corriente = input('Ingrese cuenta corriente: ')
-            CuentaBancaria = CuentaBancariaCorriente(dni, nombre, apellido, cuenta, saldo, corriente)
-        elif tipo_CuentaBancaria == '2':
-            ahorro = int(input('Ingrese cuenta ahorro: '))
-            CuentaBancaria = CuentaBancariaAhorro(dni, nombre, apellido, cuenta, saldo, ahorro)
+        if tipo_cuentabancaria == '1':
+            corriente = 'Cuenta Corriente'
+            cuentabancaria = CuentaBancariaCorriente(dni, nombre, apellido, cuenta, saldo, corriente)
+        elif tipo_cuentabancaria == '2':
+            ahorro = 'Cuenta ahorro'
+            cuentabancaria = CuentaBancariaAhorro(dni, nombre, apellido, cuenta, saldo, ahorro)
         else:
             print('Opción inválida')
             return
 
-        gestion.crear_CuentaBancaria(CuentaBancaria)
+        gestion.crear_cuentabancaria(cuentabancaria)
         input('Presione enter para continuar...')
 
     except ValueError as e:
@@ -51,35 +51,35 @@ def agregar_CuentaBancaria(gestion, tipo_CuentaBancaria):
     except Exception as e:
         print(f'Error inesperado: {e}')
 
-def buscar_CuentaBancaria_por_dni(gestion):
+def buscar_cuentabancaria_por_dni(gestion):
     dni = input('Ingrese el DNI de la cuenta bancaria a buscar: ')
-    gestion.leer_CuentaBancaria(dni)
+    gestion.leer_cuentabancaria(dni)
     input('Presione enter para continuar...')
 
-def actualizar_saldo_leer_CuentaBancaria(gestion):
+def actualizar_saldo_leer_cuentabancaria(gestion):
     dni = input('Ingrese el DNI del titular de la cuenta para actualizar saldo: ')
     saldo = float(input('Ingrese el saldo de la cuenta bancaria: '))
-    gestion.actualizar_CuentaBancaria(dni, saldo)
+    gestion.actualizar_cuentabancaria(dni, saldo)
     input('Presione enter para continuar...')
 
-def eliminar_CuentaBancaria_por_dni(gestion):
+def eliminar_cuentabancaria_por_dni(gestion):
     dni = input('Ingrese el DNI del titula de la cuenta bancaria a eliminar: ')
     gestion.eliminar_CuentaBancaria(dni)
     input('Presione enter para continuar...')
 
-def mostrar_todas_las_Cuentas_Bancarias(gestion):
-    print('=============== Listado completo de los  Colaboradores ==============')
-    for CuentaBancaria in gestion.leer_datos().values():
-        if 'corriente' in CuentaBancaria:
-            print(f"{CuentaBancaria['nombre']} - Corriente {CuentaBancaria['corriente']}")
+def mostrar_todas_las_cuentas_bancarias(gestion):
+    print('=============== Listado completo de las  Cuentas Bancarias ==============')
+    for cuentabancaria in gestion.leer_datos().values():
+        if 'Cuenta Corriente' in cuentabancaria:
+            print(f"{cuentabancaria['nombre']} - Cuenta Corriente {cuentabancaria['Cuenta Corriente']}")
         else:
-            print(f"{CuentaBancaria['nombre']} - Ahorro {CuentaBancaria['ahorro']}")
+            print(f"{cuentabancaria['nombre']} - Cuenta Ahorro {cuentabancaria['Cuenta Ahorro']}")
     print('=====================================================================')
     input('Presione enter para continuar...')
 
 if __name__ == "__main__":
-    archivo_CuentaBancaria = 'CuentaBancaria_db.json'
-    gestion = GestionCuentaBancaria(archivo_CuentaBancaria)
+    archivo_cuentabancaria = 'cuentabancaria_db.json'
+    gestion_cuentabancaria = GestionCuentaBancaria(archivo_cuentabancaria)
 
     while True:
         limpiar_pantalla()
@@ -87,24 +87,24 @@ if __name__ == "__main__":
         opcion = input('Seleccione una opción: ')
 
         if opcion == '1' or opcion == '2':
-            agregar_CuentaBancaria(gestion, opcion)
+            agregar_cuentabancaria(gestion_cuentabancaria, opcion)
         
         elif opcion == '3':
-            buscar_CuentaBancaria_por_dni(gestion)
+            buscar_cuentabancaria_por_dni(gestion_cuentabancaria)
 
         elif opcion == '4':
-            actualizar_saldo_leer_CuentaBancaria(gestion)
+            actualizar_saldo_leer_cuentabancaria(gestion_cuentabancaria)
 
         elif opcion == '5':
-            eliminar_CuentaBancaria_por_dni(gestion)
+            eliminar_cuentabancaria_por_dni(gestion_cuentabancaria)
 
         elif opcion == '6':
-            mostrar_todas_las_Cuentas_Bancarias(gestion)
+            mostrar_todas_las_cuentas_bancarias(gestion_cuentabancaria)
 
         elif opcion == '7':
             print('Saliendo del programa...')
             break
         else:
-            print('Opción no válida. Por favor, seleccione una opción válida (1-7)')
+            print('Opción no válida. Por favor, seleccione una opción válida (1 al 7)')
         
 
