@@ -11,12 +11,9 @@ Requisitos:
     Manejar errores con bloques try-except para validar entradas y gestionar excepciones.
     Persistir los datos en archivo JSON
 '''
-<<<<<<< HEAD
 import mysql.connector
 from mysql.connector import Error
 from decouple import config
-=======
->>>>>>> 5454a4b5da7dc367cd20735b6458064b0d623f68
 import json
 
 class CuentaBancaria:
@@ -120,7 +117,6 @@ class CuentaBancariaAhorro(CuentaBancaria):
         return f"{super().__str__()} - Cuenta Ahorro: {self.ahorro}"
 
 class GestionCuentaBancaria:
-<<<<<<< HEAD
     def __init__(self):
         self.host = config('DB_HOST')
         self.database = config('DB_NAME')
@@ -146,11 +142,6 @@ class GestionCuentaBancaria:
             print(f'Error al conectar a la base de datos: {e}')
             return None
 ###
-=======
-    def __init__(self, archivo):
-        self.archivo = archivo
-
->>>>>>> 5454a4b5da7dc367cd20735b6458064b0d623f68
     def leer_datos(self):
         try:
             with open(self.archivo, 'r') as file:
@@ -170,7 +161,6 @@ class GestionCuentaBancaria:
             print(f'Error al intentar guardar los datos en {self.archivo}: {error}')
         except Exception as error:
             print(f'Error inesperado: {error}')
-<<<<<<< HEAD
 ###
     def crear_cuentabancaria(self, cuentabancaria):
         try:
@@ -186,10 +176,10 @@ class GestionCuentaBancaria:
                     # Insertar colaborador dependiendo del tipo
                     if isinstance(cuentabancaria, CuentaBancariaCorriente):
                         query = '''
-                        INSERT INTO cuentabancaria (dni, nombre, apellido, cuenta, saldo)
+                        INSERT INTO cuentabancaria (dni, nombre, apellido, edad, salario)
                         VALUES (%s, %s, %s, %s, %s)
                         '''
-                        cursor.execute(query, (cuentabancaria.dni, cuentabancaria.nombre, cuentabancaria.apellido, cuentabancaria.cuenta, cuentabancaria.saldo))
+                        cursor.execute(query, (cuentabancaria.dni, cuentabancaria.nombre, cuentabancaria.apellido, cuentabancaria.edad, cuentabancaria.salario))
 
                         query = '''
                         INSERT INTO cuentabancariacorriente (dni, corriente)
@@ -198,12 +188,12 @@ class GestionCuentaBancaria:
 
                         cursor.execute(query, (cuentabancaria.dni, cuentabancaria.corriente))
 
-                    elif isinstance(cuentabancaria, CuentaBancariaAhorro):
+                    elif isinstance(cuentabancaria, CuentaBancariaCorriente):
                         query = '''
-                        INSERT INTO cuentabancaria (dni, nombre, apellido, cuenta, saldo)
+                        INSERT INTO cuentabancaria (dni, nombre, apellido, edad, salario)
                         VALUES (%s, %s, %s, %s, %s)
                         '''
-                        cursor.execute(query, (cuentabancaria.dni, cuentabancaria.nombre, cuentabancaria.apellido, cuentabancaria.cuenta, cuentabancaria.saldo))
+                        cursor.execute(query, (cuentabancaria.dni, cuentabancaria.nombre, cuentabancaria.apellido, cuentabancaria.edad, cuentabancaria.salario))
 
                         query = '''
                         INSERT INTO cuentabancariaahorro (dni, ahorro)
@@ -231,7 +221,7 @@ class GestionCuentaBancaria:
 
                         if corriente:
                             cuentabancaria_data['corriente'] = corriente['corriente']
-                            cuentabancaria = CuentaBancariaCorriente(**cuentabancaria_data)
+                            colaborador = CuentaBancariaCorriente(**cuentabancaria_data)
                         else:
                             cursor.execute('SELECT ahorro FROM cuentabancariaahorro WHERE dni = %s', (dni,))
                             ahorro = cursor.fetchone()
@@ -314,8 +304,8 @@ class GestionCuentaBancaria:
                     cursor.execute('SELECT * FROM cuentabancaria')
                     cuentabancaria_data = cursor.fetchall()
 
-                    cuentabancaria = [] 
-                                       
+                    cuentabancaria = []
+                    
                     for cuentabancaria_data in cuentabancaria_data:
                         dni = cuentabancaria_data['dni']
 
@@ -334,64 +324,9 @@ class GestionCuentaBancaria:
                         cuentabancaria.append(cuentabancaria)
 
         except Exception as e:
-            print(f'Error al mostrar las cuentas bancarias: {e}')
+            print(f'Error al mostrar los colaboradores: {e}')
         else:
             return cuentabancaria
         finally:
             if connection.is_connected():
                 connection.close()
-=======
-
-    def crear_cuentabancaria(self, cuentabancaria):
-        try:
-            datos = self.leer_datos()
-            dni = cuentabancaria.dni
-            if not str(dni) in datos.keys():
-                datos[dni] = cuentabancaria.to_dict()
-                self.guardar_datos(datos)
-                print(f"La Cuenta Bancaria de {cuentabancaria.nombre} {cuentabancaria.apellido} se ha creado correctamente.")
-            else:
-                print(f"Ya existe cuenta bancacia con DNI '{dni}'.")
-        except Exception as error:
-            print(f'Error inesperado al crear la cuenta bancaria: {error}')
-
-    def leer_cuentabancaria(self, dni):
-        try:
-            datos = self.leer_datos()
-            if dni in datos:
-                cuentabancaria_data = datos[dni]
-                if 'Cuenta Corriente' in cuentabancaria_data:
-                    cuentabancaria = CuentaBancariaCorriente(**cuentabancaria_data) #** desempaquetador
-                else:
-                    cuentabancaria = CuentaBancariaAhorro(**cuentabancaria_data)
-                print(f'Cuenta bancaria encontrada con DNI {dni}')
-            else:
-                print(f'No se encontró ha encontrado Cuenta Bancaria con DNI {dni}')
-
-        except Exception as e:
-            print('Error al leer Cuenta Bancaria: {e}')
-
-    def actualizar_cuentabancaria(self, dni, nuevo_saldo):
-        try:
-            datos = self.leer_datos()
-            if str(dni) in datos.keys():
-                 datos[dni]['saldo'] = nuevo_saldo
-                 self.guardar_datos(datos)
-                 print(f'Saldo actualizado para la Cuenta Bancaria DNI:{dni}')
-            else:
-                print(f'No se encontró Cuenta Bancaria con DNI:{dni}')
-        except Exception as e:
-            print(f'Error al actualizar la Cuenta Bancaria: {e}')
-
-    def eliminar_CuentaBancaria(self, dni):
-        try:
-            datos = self.leer_datos()
-            if str(dni) in datos.keys():
-                 del datos[dni]
-                 self.guardar_datos(datos)
-                 print(f'Cuenta Bancaria DNI:{dni} eliminada correctamente')
-            else:
-                print(f'No se encontró Cuenta Bancaria con DNI:{dni}')
-        except Exception as e:
-            print(f'Error al eliminar la Cuenta Bancaria: {e}')
->>>>>>> 5454a4b5da7dc367cd20735b6458064b0d623f68

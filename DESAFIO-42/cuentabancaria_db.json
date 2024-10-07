@@ -1,0 +1,10 @@
+{
+    "12457878": {
+        "dni": 12457878,
+        "nombre": "Javier",
+        "apellido": "Pavon",
+        "cuenta": 123456789,
+        "saldo": 3500.0,
+        "corriente": "Cuenta Corriente"
+    }
+}

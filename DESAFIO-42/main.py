@@ -69,35 +69,17 @@ def eliminar_cuentabancaria_por_dni(gestion):
 
 def mostrar_todas_las_cuentas_bancarias(gestion):
     print('=============== Listado completo de las  Cuentas Bancarias ==============')
-<<<<<<< HEAD
-    try:
-        cuentabancaria = gestion.leer_todas_las_cuentabancaria()
-        for cuentabancaria in cuentabancaria:
-            if isinstance(cuentabancaria, CuentaBancariaCorriente):
-                print(f'{cuentabancaria.dni} {cuentabancaria.apellido} {cuentabancaria.corriente}')
-            elif isinstance(cuentabancaria, CuentaBancariaAhorro):
-                print(f'{cuentabancaria.dni} {cuentabancaria.apellido} {cuentabancaria.ahorro}')
-    
-    except Exception as e:
-        print(f'error al mostrar las cuentas bancarias {e}')
-    
-=======
     for cuentabancaria in gestion.leer_datos().values():
         if 'Cuenta Corriente' in cuentabancaria:
             print(f"{cuentabancaria['nombre']} - Cuenta Corriente {cuentabancaria['Cuenta Corriente']}")
         else:
             print(f"{cuentabancaria['nombre']} - Cuenta Ahorro {cuentabancaria['Cuenta Ahorro']}")
->>>>>>> 5454a4b5da7dc367cd20735b6458064b0d623f68
     print('=====================================================================')
     input('Presione enter para continuar...')
 
 if __name__ == "__main__":
-<<<<<<< HEAD
-    gestion_cuentabancaria = GestionCuentaBancaria()
-=======
     archivo_cuentabancaria = 'cuentabancaria_db.json'
     gestion_cuentabancaria = GestionCuentaBancaria(archivo_cuentabancaria)
->>>>>>> 5454a4b5da7dc367cd20735b6458064b0d623f68
 
     while True:
         limpiar_pantalla()
